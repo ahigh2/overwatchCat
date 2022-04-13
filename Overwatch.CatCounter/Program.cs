@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Overwatch.CatCounter
 {
@@ -6,7 +7,12 @@ namespace Overwatch.CatCounter
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var serviceProvider = new ServiceCollection()
+                .AddLogging(opts => opts.AddConsole())
+                .AddSingleton<IWordCounter, WordCounter>()
+                .BuildServiceProvider();
+
+            var wordService = serviceProvider.GetService<IWordCounter>();
         }
     }
 }
