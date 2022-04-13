@@ -3,7 +3,7 @@
     /// <summary>
     /// The type of search to be performed
     /// </summary>
-    internal enum SearchMode
+    public enum SearchMode
     {
         /// <summary>
         /// Find the word exactly, not as a prefix or any part of another word or space delimited character array.

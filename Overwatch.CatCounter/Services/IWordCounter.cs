@@ -1,6 +1,6 @@
 ﻿namespace Overwatch.CatCounter
 {
-    internal interface IWordCounter
+    public interface IWordCounter
     {
         /// <summary>
         /// Counts the number of occurrences of a given <paramref name="word"/> in a  based on the <paramref name="searchMode"/>
