@@ -45,7 +45,8 @@ namespace Overwatch.CatCounter
                 // Note that this is a pretty arbitrarily small limit imposed here just for illustrative purposes.
                 if (fileInfo.Length > maxFileSize)
                 {
-                    logger.LogInformation($"Dividing a {fileInfo.Length} byte file into {fileInfo.Length / maxFileSize} {maxFileSize} byte segments for streaming.");
+                    double chunks = Math.Ceiling(fileInfo.Length / (double)maxFileSize);
+                    logger.LogInformation($"Dividing a {fileInfo.Length} byte file into {chunks} {maxFileSize} byte segments for streaming.");
                     using var stream = textReader.StreamTextFile(options.Path);
 
                     // Divide the file into the maximum file read byte number of segments
