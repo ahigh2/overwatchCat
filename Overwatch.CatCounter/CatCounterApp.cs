@@ -35,7 +35,7 @@ namespace Overwatch.CatCounter
             {
                 if (File.Exists(options.Path) == false)
                 {
-                    logger.LogCritical("Text file not found, exiting...");
+                    logger.LogCritical(@$"Text file not found at {options.Path}, exiting...");
                     return new SearchResults(0, -1);
                 }
 

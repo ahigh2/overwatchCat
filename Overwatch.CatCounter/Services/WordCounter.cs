@@ -45,8 +45,9 @@ namespace Overwatch.CatCounter
         private int GetWordCountStrict(string word, string text)
         {
             int count = 0;
-            // Remove all non-alpha characters so that they don't impact a strict search (i.e. numerals, punctuation).
-            string trimmedText = new string(text.Where(c => char.IsLetter(c) || char.IsWhiteSpace(c)).ToArray());
+            // Remove all non-alpha characters and newlines so that they don't impact a strict search (i.e. numerals, punctuation).
+            string trimmedText = new string(text.Where(c => char.IsLetter(c) || char.IsWhiteSpace(c)).ToArray())
+                .Replace(Environment.NewLine, " ");
 
             string[] words = trimmedText.Split(' ');
             foreach (string splitWord in words)

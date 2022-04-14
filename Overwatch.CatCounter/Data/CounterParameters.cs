@@ -10,7 +10,7 @@ namespace Overwatch.CatCounter
         [Option(shortName: 'm', longName: "mode", Required = true, HelpText = "The search mode. `lax` indicates prefix and partial word matching, `Strict` indicates exact word matching.")]
         public SearchMode Mode { get; set; }
 
-        [Option(shortName: 'p', longName: "path", Required = false, HelpText = "The path to a *.txt file containing the text to be searched.")]
+        [Option(shortName: 'p', longName: "path", Required = false, HelpText = "The full path to a *.txt file containing the text to be searched.")]
         public string Path { get; set; }
 
         [Option(shortName: 'i', longName: "inputText", Required = false, HelpText = "The raw text to be searched.")]
