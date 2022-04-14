@@ -27,6 +27,7 @@ namespace Overwatch.CatCounter
         public async Task<SearchResults> Run(ICounterParameters options)
         {
             int count = 0;
+
             // Favor a file path if provided
             if (File.Exists(options.Path))
             {
@@ -36,13 +37,15 @@ namespace Overwatch.CatCounter
                 // Note that this is a pretty arbitrarily small limit imposed here just for illustrative purposes.
                 if (fileInfo.Length > maxFileSize)
                 {
+                    logger.LogInformation($"Dividing a {fileInfo.Length} byte file into {fileInfo.Length / maxFileSize} {maxFileSize} byte segments for streaming.");
                     using var stream = textReader.StreamTextFile(options.Path);
 
                     // Divide the file into the maximum file read byte number of segments
-                    count = await ReadStreamInChunks(options, count, fileInfo, maxFileSize, stream);
+                    count = await ReadStreamInChunks(stream, options, fileInfo.Length, count, maxFileSize);
                 }
                 else
                 {
+                    logger.LogInformation($"Reading a {fileInfo.Length} byte file into memory.");
                     string text = textReader.ReadTextFile(options.Path);
                     count = wordCounter.CountWords(options.Mode, options.SearchTerm, text);
                 }
@@ -53,18 +56,30 @@ namespace Overwatch.CatCounter
                 count = wordCounter.CountWords(options.Mode, options.SearchTerm, options.Text);
             }
 
-            logger.LogInformation($"Found the term '{options.SearchTerm}' {count} times.");
+            logger.LogInformation($"Found the term '{options.SearchTerm}' {count} times using a {options.Mode} method.");
             return new SearchResults(count, 0);
         }
 
-        private async Task<int> ReadStreamInChunks(ICounterParameters options, int count, FileInfo fileInfo, int maxFileSize, StreamReader stream)
+        private async Task<int> ReadStreamInChunks(
+            StreamReader stream,
+            ICounterParameters options,
+            long fileSizeInBytes,
+            int count,
+            int chunkSize)
         {
-            for (int i = 0; i < fileInfo.Length; i += maxFileSize)
+            // Oversize the last buffer by the max file size to ensure we don't truncate any characters
+            for (int i = 0; i <= fileSizeInBytes + chunkSize; i += chunkSize)
             {
-                char[] buffer = new char[maxFileSize];
-                await stream.ReadBlockAsync(buffer, 0, maxFileSize);
+                char[] buffer = new char[chunkSize];
+                int bytesRead = await stream.ReadBlockAsync(buffer, 0, chunkSize);
                 string textChunk = new(buffer);
                 count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
+
+                // EOF
+                if (bytesRead == 0)
+                {
+                    break;
+                }
             }
 
             return count;

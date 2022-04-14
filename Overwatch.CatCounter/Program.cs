@@ -25,18 +25,23 @@ namespace Overwatch.CatCounter
 
         public static IServiceCollection ConfigureServices(IServiceCollection services)
         {
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+
             services
-                .AddLogging(opts => opts.AddConsole())
+                .AddLogging(opts =>
+                {
+                    LogLevel logLevel = config.GetValue<LogLevel>("Logging.LogLevel.Default");
+                    opts.AddConsole()
+                    .SetMinimumLevel(logLevel);
+                })
                 .AddSingleton<ICatCounterApp, CatCounterApp>()
                 .AddSingleton<IWordCounter, WordCounter>()
                 .AddSingleton<ICounterParameters, CounterParameters>()
                 .AddTransient<ITextFileReader, TextFileReader>()
                 .BuildServiceProvider();
-
-            IConfiguration config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-                .AddJsonFile("appsettings.json", false)
-                .Build();
 
             services.AddSingleton(config);
             return services;

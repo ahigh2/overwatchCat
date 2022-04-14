@@ -2,6 +2,9 @@
 
 namespace Overwatch.CatCounter
 {
+    /// <summary>
+    /// Utility to read or stream text files from disk into memory.
+    /// </summary>
     public interface ITextFileReader
     {
         /// <summary>

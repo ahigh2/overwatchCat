@@ -25,7 +25,6 @@ namespace Overwatch.CatCounter
                 return 0;
             }
 
-            logger.LogTrace($"Searching using a {searchMode} method.");
             switch (searchMode)
             {
                 case SearchMode.Strict:
