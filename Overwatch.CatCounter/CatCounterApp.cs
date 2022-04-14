@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Overwatch.CatCounter
@@ -29,8 +31,14 @@ namespace Overwatch.CatCounter
             int count = 0;
 
             // Favor a file path if provided
-            if (File.Exists(options.Path))
+            if (string.IsNullOrWhiteSpace(options.Path) == false)
             {
+                if (File.Exists(options.Path) == false)
+                {
+                    logger.LogCritical("Text file not found, exiting...");
+                    return new SearchResults(0, -1);
+                }
+
                 FileInfo fileInfo = new FileInfo(options.Path);
                 int maxFileSize = configuration.GetValue<int>("maximumReadFileSizeInBytes");
                 // Stream the file, it's too big to read directly.
@@ -67,12 +75,35 @@ namespace Overwatch.CatCounter
             int count,
             int chunkSize)
         {
+            string previousChunk = string.Empty;
             // Oversize the last buffer by the max file size to ensure we don't truncate any characters
             for (int i = 0; i <= fileSizeInBytes + chunkSize; i += chunkSize)
             {
                 char[] buffer = new char[chunkSize];
                 int bytesRead = await stream.ReadBlockAsync(buffer, 0, chunkSize);
                 string textChunk = new string(buffer);
+
+                //Edge case guard: Ensure that the chunk wasn't split across a match word.
+                if (string.IsNullOrWhiteSpace(previousChunk) == false && previousChunk.Length > options.SearchTerm.Length)
+                {
+                    string previousTrail = previousChunk.Substring(previousChunk.Length - options.SearchTerm.Length, options.SearchTerm.Length);
+                    string currentLead = textChunk.Substring(0, options.SearchTerm.Length);
+                    if (previousTrail.Equals(options.SearchTerm, StringComparison.OrdinalIgnoreCase) == false &&
+                        currentLead.Equals(options.SearchTerm, StringComparison.OrdinalIgnoreCase) == false)
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append(previousTrail);
+                        sb.Append(currentLead);
+                        string testJoin = sb.ToString();
+                        if (testJoin.Contains(options.SearchTerm, StringComparison.OrdinalIgnoreCase))
+                        {
+                            count += wordCounter.CountWords(options.Mode, options.SearchTerm, sb.ToString());
+                        }
+                    }
+                }
+
+                previousChunk = textChunk;
+
                 count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
 
                 // EOF

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace Overwatch.CatCounter
 {
@@ -21,7 +22,6 @@ namespace Overwatch.CatCounter
                 string.IsNullOrWhiteSpace(text) ||
                 text.Length < word.Length)
             {
-                logger.LogError("Unable to count words, invalid input provided.");
                 return 0;
             }
 
@@ -45,8 +45,10 @@ namespace Overwatch.CatCounter
         private int GetWordCountStrict(string word, string text)
         {
             int count = 0;
+            // Remove all non-alpha characters so that they don't impact a strict search (i.e. numerals, punctuation).
+            string trimmedText = new string(text.Where(c => char.IsLetter(c) || char.IsWhiteSpace(c)).ToArray());
 
-            string[] words = text.Split(' ');
+            string[] words = trimmedText.Split(' ');
             foreach (string splitWord in words)
             {
                 if (word.Equals(splitWord, StringComparison.OrdinalIgnoreCase))
