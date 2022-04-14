@@ -19,7 +19,7 @@ namespace Overwatch.CatCounter.Tests
         }
 
         [TestCase(SearchMode.Lax, 31)]
-        [TestCase(SearchMode.Strict, 16)]
+        [TestCase(SearchMode.Strict, 30)]
         public async Task CatCounter_ShouldCountFileInput(SearchMode mode, int expectedCount)
         {
             // Arrange
@@ -27,7 +27,7 @@ namespace Overwatch.CatCounter.Tests
             {
                 Mode = mode,
                 SearchTerm = searchTerm,
-                Path = @"c:\temp\catInTheHat.txt"
+                Path = "cat_in_the_hat.txt"
             };
 
             // Act
@@ -65,7 +65,7 @@ namespace Overwatch.CatCounter.Tests
                 Mode = SearchMode.Lax,
                 SearchTerm = searchTerm,
                 Text = "cat",
-                Path = @"c:\temp\catInTheHat.txt"
+                Path = "cat_in_the_hat.txt"
             };
 
             // Act
@@ -76,7 +76,7 @@ namespace Overwatch.CatCounter.Tests
         }
 
         [Test]
-        public async Task CatCounter_ShouldFallbackToText_OnBadPath()
+        public async Task CatCounter_ShouldProduceError_OnBadPath()
         {
             // Arrange
             ICounterParameters counterParameters = new CounterParameters()
@@ -91,7 +91,8 @@ namespace Overwatch.CatCounter.Tests
             SearchResults results = await catApp.Run(counterParameters);
 
             // Assert
-            results.Count.Should().Be(1);
+            results.ExitCode.Should().Be(-1);
+            results.Count.Should().Be(0);
         }
     }
 }

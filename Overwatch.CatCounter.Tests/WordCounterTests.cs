@@ -1,5 +1,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Overwatch.CatCounter.Tests
@@ -12,10 +14,8 @@ namespace Overwatch.CatCounter.Tests
         [SetUp]
         public void Setup()
         {
-            var services = new ServiceCollection();
-            services.AddSingleton<IWordCounter, WordCounter>();
-            var serviceProvider = services.BuildServiceProvider();
-            wordCounter = serviceProvider.GetService<IWordCounter>();
+            ILogger<IWordCounter> logger = Substitute.For<ILogger<IWordCounter>>();
+            wordCounter = new WordCounter(logger);
         }
 
         [TestCase(word, "cat", SearchMode.Strict, 1)]
