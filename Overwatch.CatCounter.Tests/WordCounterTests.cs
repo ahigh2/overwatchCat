@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Overwatch.CatCounter.Tests
 {
-    public class Tests
+    public class WordCounterTests
     {
         private const string word = "cat";
         private IWordCounter wordCounter;
@@ -29,7 +29,7 @@ namespace Overwatch.CatCounter.Tests
         [TestCase(word, "the shaggy brown dog", SearchMode.Lax, 0)]
         [TestCase(word, " ", SearchMode.Lax, 0)]
         [TestCase(" ", " ", SearchMode.Lax, 0)]
-        public void WordCounter_ShouldCountWords_WhenGivenProperParams_Simple(string word, string text, SearchMode mode, int expectedResult)
+        public void WordCounter_ShouldCountWords_WhenGivenProperParams(string word, string text, SearchMode mode, int expectedResult)
         {
             wordCounter.CountWords(mode, word, text).Should().Be(expectedResult);
         }

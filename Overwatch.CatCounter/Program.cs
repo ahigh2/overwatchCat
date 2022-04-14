@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Overwatch.CatCounter
 {
-    internal class Program
+    public class Program
     {
         static async Task Main(string[] args)
         {
@@ -18,11 +18,12 @@ namespace Overwatch.CatCounter
             await Parser.Default.ParseArguments<CounterParameters>(args).MapResult(async (CounterParameters opts) =>
             {
                 var app = serviceProvider.GetRequiredService<ICatCounterApp>();
-                return await app.Run(opts);
+                var result = await app.Run(opts);
+                return result.ExitCode;
             }, errors => Task.FromResult(-1));
         }
 
-        private static IServiceCollection ConfigureServices(IServiceCollection services)
+        public static IServiceCollection ConfigureServices(IServiceCollection services)
         {
             services
                 .AddLogging(opts => opts.AddConsole())

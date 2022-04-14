@@ -73,7 +73,6 @@ namespace Overwatch.CatCounter
                 }
             }
 
-
             return count;
         }
     }

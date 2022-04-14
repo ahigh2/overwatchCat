@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 
 namespace Overwatch.CatCounter
 {
-    internal class CatCounterApp : ICatCounterApp
+    public class CatCounterApp : ICatCounterApp
     {
         private readonly ILogger<ICatCounterApp> logger;
         private readonly ITextFileReader textReader;
         private readonly IWordCounter wordCounter;
         private readonly IConfiguration configuration;
-        private ICounterParameters options;
 
         public CatCounterApp(
             ILogger<ICatCounterApp> logger,
@@ -25,9 +24,8 @@ namespace Overwatch.CatCounter
             this.configuration = configuration;
         }
 
-        public async Task<int> Run(ICounterParameters options)
+        public async Task<SearchResults> Run(ICounterParameters options)
         {
-            this.options = options;
             int count = 0;
             // Favor a file path if provided
             if (File.Exists(options.Path))
@@ -40,12 +38,13 @@ namespace Overwatch.CatCounter
                 {
                     using var stream = textReader.StreamTextFile(options.Path);
 
-                    // Divide the file into 2048 byte segments
-                    const int chunkSize = 2048;
-                    for (int i = 0; i < fileInfo.Length; i += chunkSize)
+                    // Divide the file into the maximum file read byte number of segments
+                    for (int i = 0; i < fileInfo.Length; i += maxFileSize)
                     {
-                        char[] buffer = new char[chunkSize];
-                        await stream.ReadBlockAsync(buffer, 0, chunkSize);
+                        char[] buffer = new char[maxFileSize];
+                        await stream.ReadBlockAsync(buffer, 0, maxFileSize);
+                        string textChunk = new(buffer);
+                        count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
                     }
                 }
                 else
@@ -61,17 +60,17 @@ namespace Overwatch.CatCounter
             }
 
             logger.LogInformation($"Found the term '{options.SearchTerm}' {count} times.");
-            return 0;
+            return new SearchResults(count, 0);
         }
     }
 
-    internal interface ICatCounterApp
+    public interface ICatCounterApp
     {
         /// <summary>
         /// Runs the application to count instances of the word 'cat'.
         /// </summary>
         /// <param name="options">The options for the job.</param>
         /// <returns>An exit code.</returns>
-        Task<int> Run(ICounterParameters options);
+        Task<SearchResults> Run(ICounterParameters options);
     }
 }
