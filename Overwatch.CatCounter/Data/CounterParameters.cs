@@ -18,11 +18,26 @@ namespace Overwatch.CatCounter
 
     }
 
+    /// <summary>
+    /// Parameters for configuring the Cat Counter application.
+    /// </summary>
     public interface ICounterParameters
     {
+        /// <summary>
+        /// The term to be found.
+        /// </summary>
         public string SearchTerm { get; set; }
+        /// <summary>
+        /// The mode of search.
+        /// </summary>
         public SearchMode Mode { get; set; }
+        /// <summary>
+        /// The path to the file to be searched.
+        /// </summary>
         public string Path { get; set; }
+        /// <summary>
+        /// The input text to be searched (ignored if a valid <see cref="Path"/> is passed).
+        /// </summary>
         public string Text { get; set; }
     }
 }

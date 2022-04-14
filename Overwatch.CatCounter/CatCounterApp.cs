@@ -42,7 +42,7 @@ namespace Overwatch.CatCounter
                 FileInfo fileInfo = new FileInfo(options.Path);
                 int maxFileSize = configuration.GetValue<int>("maximumReadFileSizeInBytes");
                 // Stream the file, it's too big to read directly.
-                // Note that this is a pretty arbitrarily small limit imposed here just for illustrative purposes.
+                // Note that this is a pretty arbitrarily small limit by default (see appsettings.json) imposed here just for illustrative purposes.
                 if (fileInfo.Length > maxFileSize)
                 {
                     double chunks = Math.Ceiling(fileInfo.Length / (double)maxFileSize);
