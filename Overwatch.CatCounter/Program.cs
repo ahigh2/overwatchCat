@@ -12,8 +12,8 @@ namespace Overwatch.CatCounter
     {
         static async Task Main(string[] args)
         {
-            ServiceProvider serviceProvider = ConfigureServices(new ServiceCollection()).BuildServiceProvider();
-            var wordService = serviceProvider.GetService<IWordCounter>();
+            using ServiceProvider serviceProvider = ConfigureServices(new ServiceCollection()).BuildServiceProvider();
+            IWordCounter wordService = serviceProvider.GetService<IWordCounter>();
 
             await Parser.Default.ParseArguments<CounterParameters>(args).MapResult(async (CounterParameters opts) =>
             {

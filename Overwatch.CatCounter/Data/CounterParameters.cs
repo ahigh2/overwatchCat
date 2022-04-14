@@ -4,7 +4,7 @@ namespace Overwatch.CatCounter
 {
     public class CounterParameters : ICounterParameters
     {
-        [Value(0, Required = true, HelpText = "The search term that will be counted in the input text.")]
+        [Value(0, Required = true, MetaName = "searchTerm", HelpText = "The search term that will be counted in the input text.")]
         public string SearchTerm { get; set; }
 
         [Option(shortName: 'm', longName: "mode", Required = true, HelpText = "The search mode. `lax` indicates prefix and partial word matching, `Strict` indicates exact word matching.")]
