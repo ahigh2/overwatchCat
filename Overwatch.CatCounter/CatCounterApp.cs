@@ -72,7 +72,7 @@ namespace Overwatch.CatCounter
             {
                 char[] buffer = new char[chunkSize];
                 int bytesRead = await stream.ReadBlockAsync(buffer, 0, chunkSize);
-                string textChunk = new(buffer);
+                string textChunk = new string(buffer);
                 count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
 
                 // EOF
