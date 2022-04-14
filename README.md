@@ -27,7 +27,7 @@ This is a .NET Core 3.1 Console Application and can be run on Windows, Linux, or
 
 ### Running the application
 
-After building, `dotnet run Overwatch.CatCounter` from the *.sln directory to view help and command line information:
+After building, `dotnet run -- --help` from the *.sln directory to view help and command line information:
 
 ```
   -m, --mode             Required. The search mode. `lax` indicates prefix and
