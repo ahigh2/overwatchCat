@@ -9,7 +9,7 @@ Searching occurs in one of two modes:
 * Lax - Finds the character sequence provided (i.e. 'caterpillar' and 'cat' both match 'cat')
 * Strict - Finds the exact word provided (i.e. 'the cat' matches 'cat' but 'caterpillar' does not)
 
-The results of the operation are reported via Console stdout to the screen and are not persisted. The application is invoked via command line with arguments, see [Running the Application]https://github.com/ahigh2/overwatchCat#running-the-application) for more details. Unit and integration tests also exist for exploration and verification of functionality.
+The results of the operation are reported via Console stdout to the screen and are not persisted. The application is invoked via command line with arguments, see [Running the Application](https://github.com/ahigh2/overwatchCat#running-the-application) for more details. Unit and integration tests also exist for exploration and verification of functionality.
 
 Two example files have been included in this repo, war_and_peace.txt and cat_in_the_hat.txt.
 
