@@ -11,6 +11,7 @@ Searching occurs in one of two modes:
 
 The results of the operation are reported via Console stdout to the screen and are not persisted. The application is invoked via command line with arguments, see "Running the Application" for more details.
 
+Two example files have been included in this repo, war_and_peace.txt and cat_in_the_hat.txt.
 
 
 ## Getting Started
@@ -54,6 +55,9 @@ After building, `dotnet run Overwatch.CatCounter` from the *.sln directory to vi
 
 ### Running the tests
 After running `dotnet build`, simply run `dotnet test` to execute a series of [unit tests](https://github.com/ahigh2/overwatchCat/blob/master/Overwatch.CatCounter.Tests/WordCounterTests.cs) against the word counter and [integration tests](https://github.com/ahigh2/overwatchCat/blob/master/Overwatch.CatCounter.Tests/CatCounterApp.IntegrationTests.cs) against the entire application.
+
+## Additional Configuration
+The application has a configurable byte size limit to read a single text file into memory, which can be accessed at https://github.com/ahigh2/overwatchCat/blob/master/Overwatch.CatCounter/appsettings.json . File sizes exceeding this limit are chunked and streamed, while sizes at or below this limit are read wholesale into memory. This value is set fairly artificially low such that it forces War & Peace to be chunked and streamed and Cat in the Hat to be read into memory.
 
 ## Help
 
