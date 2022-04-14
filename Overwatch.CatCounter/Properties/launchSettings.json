@@ -2,7 +2,7 @@
   "profiles": {
     "Overwatch.CatCounter": {
       "commandName": "Project",
-      "commandLineArgs": "\"cat\" -m \"Lax\" -i \"the quick cat\" -p \"c:\\temp\\catInTheHat.txt\""
+      "commandLineArgs": "\"cat\" -m \"Strict\" -i \"the quick cat\" -p \"c:\\temp\\catInTheHat.txt\""
     }
   }
 }

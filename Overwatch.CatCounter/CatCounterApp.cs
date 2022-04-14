@@ -39,13 +39,7 @@ namespace Overwatch.CatCounter
                     using var stream = textReader.StreamTextFile(options.Path);
 
                     // Divide the file into the maximum file read byte number of segments
-                    for (int i = 0; i < fileInfo.Length; i += maxFileSize)
-                    {
-                        char[] buffer = new char[maxFileSize];
-                        await stream.ReadBlockAsync(buffer, 0, maxFileSize);
-                        string textChunk = new(buffer);
-                        count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
-                    }
+                    count = await ReadStreamInChunks(options, count, fileInfo, maxFileSize, stream);
                 }
                 else
                 {
@@ -61,6 +55,19 @@ namespace Overwatch.CatCounter
 
             logger.LogInformation($"Found the term '{options.SearchTerm}' {count} times.");
             return new SearchResults(count, 0);
+        }
+
+        private async Task<int> ReadStreamInChunks(ICounterParameters options, int count, FileInfo fileInfo, int maxFileSize, StreamReader stream)
+        {
+            for (int i = 0; i < fileInfo.Length; i += maxFileSize)
+            {
+                char[] buffer = new char[maxFileSize];
+                await stream.ReadBlockAsync(buffer, 0, maxFileSize);
+                string textChunk = new(buffer);
+                count += wordCounter.CountWords(options.Mode, options.SearchTerm, textChunk);
+            }
+
+            return count;
         }
     }
 

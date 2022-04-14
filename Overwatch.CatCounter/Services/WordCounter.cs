@@ -1,9 +1,17 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 
 namespace Overwatch.CatCounter
 {
     public class WordCounter : IWordCounter
     {
+        private readonly ILogger<IWordCounter> logger;
+
+        public WordCounter(ILogger<IWordCounter> logger)
+        {
+            this.logger = logger;
+        }
+
         public int CountWords(SearchMode searchMode, string word, string text)
         {
             // Throw out invalid values.
@@ -13,9 +21,11 @@ namespace Overwatch.CatCounter
                 string.IsNullOrWhiteSpace(text) ||
                 text.Length < word.Length)
             {
+                logger.LogError("Unable to count words, invalid input provided.");
                 return 0;
             }
 
+            logger.LogTrace($"Searching using a {searchMode} method.");
             switch (searchMode)
             {
                 case SearchMode.Strict:
